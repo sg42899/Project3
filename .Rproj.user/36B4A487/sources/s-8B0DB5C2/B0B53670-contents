@@ -1,7 +1,0 @@
-name: Projects
-source:
-  - icon: fa fa-github
-    description: This project involved using data wrangling to explore data from the top 200 IMDB movies. 
-    
-  - icon: fa fa-github
-    description: This project was about using modeling statistics to see the relationship between caffeine and gender on mood. 

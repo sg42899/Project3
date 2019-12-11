@@ -1,6 +1,0 @@
-"0","ggplot(movies_comb%>%filter(Decade==2010)%>%na.omit,"
-"0","  aes(x=Production,fill=Genre))+"
-"0","  geom_bar(aes(y=USboxOfficeInf),stat=""summary"",fun.y=""mean"")+"
-"0","  coord_flip()+ggtitle(""Production Companies' US Box Office from 2010s"") + "
-"0","  ylab(""US Domestic Box Office"") + xlab(""Production Companies"")+"
-"0","  theme_minimal()+scale_fill_hue()"
