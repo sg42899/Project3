@@ -1,9 +1,12 @@
 ---
-categories:
-- projects
-date: "2016-10-02T22:55:05-04:00"
-showpagemeta: false
-tags:
-- projects
-title: Projects
+date: "2019-12-10"
+highlight: "true"
+linktitle: Projects Page
+title: Projects Page
 ---
+
+## Here are the projects I have completed
+
+This [project 1](/EDA) involved exploring a dataset using data wrangling and exploratory analysis. 
+
+This [project 2](/Project_2) involved using statistics for modeling, infering and predicting.

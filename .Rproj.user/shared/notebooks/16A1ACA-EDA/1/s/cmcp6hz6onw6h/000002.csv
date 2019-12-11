@@ -1,0 +1,3 @@
+"0","movies_comb%>%filter(rating==3)%>%select(Title,Actors)%>%"
+"0","  distinct()%>%group_by(Actors)%>%"
+"0","  summarize(n=n())%>%arrange(desc(n))"

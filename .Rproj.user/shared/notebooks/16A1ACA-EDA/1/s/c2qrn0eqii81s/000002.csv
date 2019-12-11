@@ -1,0 +1,5 @@
+"0","movies_comb%>%filter(Decade==2000)%>%na.omit()%>%"
+"0","  group_by(Director)%>%distinct(USboxOfficeInf)%>%"
+"0","  summarize(mean_BoxOfficeUs=mean(USboxOfficeInf),"
+"0","  num_movies=n_distinct(USboxOfficeInf),max_BoxOfficeUs=max(USboxOfficeInf),"
+"0","  min_BoxOfficeUs=min(USboxOfficeInf))%>%arrange(desc(mean_BoxOfficeUs))#, desc(num_movies))"

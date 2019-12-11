@@ -1,0 +1,5 @@
+"0","movies_comb%>%na.omit%>%"
+"0","  select(Director,rating,USboxOfficeInf)%>%"
+"0","  group_by(Director)%>%distinct()%>%"
+"0","  summarize(bechdel_mean=mean(rating),mean_BoxOfficeUs=mean(USboxOfficeInf))%>%"
+"0","  arrange(desc(mean_BoxOfficeUs))"

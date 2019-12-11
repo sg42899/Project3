@@ -1,0 +1,7 @@
+"0","options(scipen=999)"
+"0","ggplot(movies_comb%>%filter(Decade>=1990))+"
+"0","  geom_point(aes(y=USboxOfficeInf,x=imdbVotes,color=rating,size=imdbRating))+"
+"0","  theme_minimal()+"
+"0","  ggtitle(""Relationship between IMDB Votes and US Box Office in 1990-2010s"") + "
+"0","  ylab(""US Domestic Box Office"") + xlab(""IMDB Votes"")+"
+"0","  scale_color_gradient(low=""yellow"",high=""red"")"

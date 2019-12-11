@@ -1,0 +1,4 @@
+"0","movies_comb%>%group_by(Language,Rated)%>%"
+"0","  distinct(USboxOfficeInf)%>%"
+"0","  summarize(mean_BoxOfficeUs=mean(USboxOfficeInf, na.rm=T))%>%"
+"0","  arrange(desc(mean_BoxOfficeUs))"

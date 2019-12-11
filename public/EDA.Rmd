@@ -1,0 +1,197 @@
+---
+title: "Exploratory Data Analysis"
+author: "Sruti Gorantla, sg42899"
+date: '2019-12-10'
+output:
+  pdf_document: default
+  html_document: default
+---
+
+#### These datasets were taken from the Internet. Two datasets were used: one includes data about the Bechdel test score of each movie, while the other includes information about the top 250 movies on IMDB. The USboxOfficeInf variable is the US box office total that has been inflated to the current 2019 value. The dataset of the IMDB movies was found on the website data.world. I choose these two datasets because I like movies a lot and was curious to see how the top 250 movies ranked on the Bechdel test.
+
+```{R}
+library(jsonlite)
+library(tidyverse)
+bechdel <- fromJSON("http://bechdeltest.com/api/v1/getAllMovies?")
+glimpse(bechdel)
+movies <- read_csv("IMDB_Top250movies2_OMDB_Detailed.csv", col_types =  cols(Metascore = col_number(),Runtime = col_number(), USBoxOffice_Inf=col_double()))%>%
+          separate(imdbID,into=c("imdbID","imdbid"), sep=2)%>%
+          select(-imdbID)
+glimpse(movies)
+
+#created a new variable called decade to classify each movie
+movies <- movies%>%mutate(Decade=floor(Year/10)*10)
+
+````
+
+```{R}
+movies_comb <- left_join(movies,bechdel,by="imdbid")%>%select(-title,-year)
+glimpse(movies_comb)
+nrow(bechdel)-nrow(movies_comb)
+````
+
+*7940 rows from the bechdel dataset were lost by combining with a left join. I choose a left join because I only wanted the bechdel information of the movies in the top 250 on IMDB.*
+
+```{R}
+#Separated each writer, actor, language, director and genre into its own row
+movies_comb <- movies_comb%>%
+  separate_rows(Writer,sep=", ")%>%
+  separate_rows(Actors,sep=", ")%>%
+  separate_rows(Language,sep=", ")%>%
+  separate_rows(Director,sep=", ")%>% 
+  separate_rows(Genre,sep=", ")
+
+#Had to manually recode certain production company names because they were coded differently
+movies_comb$Production[movies_comb$Production=="Paramount Pictures"] <-"Paramount Studios"
+movies_comb$Production[movies_comb$Production=="Warner Bros."] <-"Warner Bros. Pictures"
+movies_comb$Production[movies_comb$Production=="The Weinstein Co."] <-"The Weinstein Company"
+movies_comb$Production[movies_comb$Production=="Lionsgate"] <-"Lionsgate Films"
+movies_comb$Production[movies_comb$Production=="Liongate Films"] <-"Lionsgate Films"
+movies_comb$Production[movies_comb$Production=="Twentieth Century Fox"] <-"20th Century Fox"
+movies_comb$Production[movies_comb$Production=="Buena Vista Pictures"] <-"Buena Vista"
+
+movies_comb<-movies_comb%>%rename(oscarsWon=Oscars_won,oscarsNom=Oscars_nom,
+   USboxOfficeInf=USBoxOffice_Inf)
+````
+
+
+```{R}
+statsTable<-movies_comb%>%select_if(is.numeric)%>%select(-X1,-id)%>%
+   na.omit%>%distinct()%>%
+   summarize_all(list(min=min,max=max,sd=sd,var=var,mean=mean))
+
+statsTable<-statsTable%>%pivot_longer(contains("_"))%>%
+   separate(name,into=c("Variable","Stat"),sep="_")%>%
+   pivot_wider(names_from="Stat",values_from="value")
+
+print(statsTable)
+````
+
+*This table shows min, max, sd, var, and mean for each numeric variable. The max year is 2017. The max IMDB rating is 9.3. The max metascore is 100 while the min metascore is 53. The max number of Oscars a movie won is 11. The highest inflated US box office total is $1,802,000,000 (belonging to Gone With the Wind).*
+
+```{R}
+movies_comb%>%group_by(Decade)%>%distinct(USboxOfficeInf)%>%
+   summarize(mean_BoxOfficeUs=mean(USboxOfficeInf, na.rm=T),n=n()) 
+````
+
+*This shows the mean inflated US box office total for each decade. 1930 had the largest mean (probably because Gone with the Wind was released this decade). 2000 and 2010 had the lowest means.*
+
+```{R}
+movies_comb
+movies_comb%>%group_by(Actors)%>%distinct(USboxOfficeInf)%>%
+   summarize(mean_BoxOfficeUs=mean(USboxOfficeInf, na.rm=T),
+   num_movies=n_distinct(USboxOfficeInf))%>%
+   arrange(desc(mean_BoxOfficeUs))
+````
+
+*This shows the mean inflated US box office totals for each actor, arranged in descending order of the mean money. The actors from Gone with the Wind had the greatest amount. Next was Peter Cushing who acted in Star Wars: A New Hope. Following him is Lorraine Gary, who was in Jaws. Most of these actors with the highest mean only acted in one movie.*
+
+```{R}
+movies_comb%>%filter(Decade==2000)%>%na.omit()%>%
+  group_by(Director)%>%distinct(USboxOfficeInf)%>%
+  summarize(mean_BoxOfficeUs=mean(USboxOfficeInf),
+  num_movies=n_distinct(USboxOfficeInf),max_BoxOfficeUs=max(USboxOfficeInf),
+  min_BoxOfficeUs=min(USboxOfficeInf))%>%arrange(desc(mean_BoxOfficeUs))#, desc(num_movies))
+````
+
+*This shows the directors in 2000s, arranged by descending mean US box office totals. Peter Jackson had the largest mean box office with 3 movies. Next is Lee Unkrich who had two movies. Christopher Nolan had the most movies (4) in 2000s but was ranked number 10 by mean box office totals.*
+
+```{R}
+movies_comb%>%filter(rating==3)%>%select(Title,Actors)%>%
+  distinct()%>%group_by(Actors)%>%
+  summarize(n=n())%>%arrange(desc(n))
+````
+
+*This ranks each actor by the number of movies he was in that had a score of 3 on the Bechdel test. A score of 3 indicates the movie passed the test. Aamir Khan, Arnold Schwarzenegger, Bette Davis, Emma Stone, Clint Eastwood, Bruce Wilis, Harrison Ford, and many others acted in the most number of movies that passed the Bechdel Test. The highest number of movies was only 2.*
+
+```{R}
+movies_comb%>%group_by(Language,Rated)%>%
+  distinct(USboxOfficeInf)%>%
+  summarize(mean_BoxOfficeUs=mean(USboxOfficeInf, na.rm=T))%>%
+  arrange(desc(mean_BoxOfficeUs))
+````
+
+*This looked at mean US box office totals of different ratings in different languages. The box office totals was arranged in descending order. Movies in Hebrew and Nepali with a PG rating had the most mean US box office. Movies in English with a G rating was ranked number 7. Overall, PG and G movies seemed to make more money. R movies and unrated/not rated movies made the least amount.*
+
+```{R}
+movies_comb%>%select_if(is.numeric)%>%select(-X1,-id,-Year)%>%
+  na.omit%>%distinct()%>%cor
+````
+
+*This shows a correlation matrix between the numeric variables. The highest correlation is between IMDB rating and IMDB votes (0.6359). The next highest correlation is between runtime and number of Oscars won (0.4262). Bechdel test score and IMDB votes have the weakest correlation (0.0142). Interestingly, the Bechdel test score has a slight negative correlation with the IMDB rating (-0.1397) and the number of Oscars nominated (-0.0548).*
+
+```{R}
+movies_comb%>%na.omit%>%
+  select(Director,rating,USboxOfficeInf)%>%
+  group_by(Director)%>%distinct()%>%
+  summarize(bechdel_mean=mean(rating),mean_BoxOfficeUs=mean(USboxOfficeInf))%>%
+  arrange(desc(mean_BoxOfficeUs))
+````
+
+*This looked at directors by their mean Bechdel score. Sam Wood had the highest mean US box office totals and a mean Bechdel rating of 3, while George Lucas had the second highest mean but a mean Bechdel rating of only 1. Irvin Kershner is ranked #6 by mean US box office totals but has a Bechdel score of 0.*
+
+```{R}
+movies_comb%>%na.omit%>%
+  select(Writer,rating,Metascore,oscarsWon)%>%
+  group_by(Writer)%>%distinct()%>%
+  summarize(mean_bechdel=mean(rating),
+  mean_Metascore=mean(Metascore),mean_Oscars_won=mean(oscarsWon))%>%
+  arrange(desc(mean_Metascore))
+````
+
+*This looked at different writers by their mean Bechdel score, mean Metascore and mean number of Oscars won. This was arranged by descending order of the mean Metascore. 8 writers had a metascore of 100 but 3 of them had a total Bechdel score of 0 (Robert Bolt, T. E. Lawrence, Michael Wilson); the rest had a total Bechdel score of only 3.*
+
+```{R}
+movies_comb%>%na.omit%>%select(Genre,rating,USboxOfficeInf)%>%
+  group_by(Genre)%>%distinct()%>%
+  summarize(mean_rating=mean(rating),
+  mean_BoxOfficeUs=mean(USboxOfficeInf))%>%
+  arrange(desc(mean_BoxOfficeUs))#, desc(mean_rating))
+````
+
+*This looked at the mean Bechdel test score and mean US box office total by the movies' genres. Fantasy had the highest box office compared to any other genre. It has a mean Bechdel score of 2. By arranging by descending mean Bechdel test score, Fantasy ranked #6. Family had the highest mean Bechdel test score but had the second least descending mean US box office total. Music had the lowest mean box office.*
+
+```{R}                                          
+options(scipen=999)
+ggplot(movies_comb%>%filter(Decade>=1990))+
+  geom_point(aes(y=USboxOfficeInf,x=imdbVotes,color=rating,size=imdbRating))+
+  theme_minimal()+
+  ggtitle("Relationship between IMDB Votes and US Box Office in 1990-2010s") + 
+  ylab("US Domestic Box Office") + xlab("IMDB Votes")+
+  scale_color_gradient(low="yellow",high="red")
+````
+
+##### There appears to be a slight positive correlation between IMDB votes and US inflated box office totals. The movies with the highest votes and highest box office had greater IMDB ratings. The Bechdel test seems to be spread evenly regardless of IMDB votes and box office. 
+
+```{R} 
+ggplot(movies_comb%>%filter(Decade==2010)%>%na.omit,
+  aes(x=Production,fill=Genre))+
+  geom_bar(aes(y=USboxOfficeInf),stat="summary",fun.y="mean")+
+  coord_flip()+ggtitle("Production Companies' US Box Office from 2010s") + 
+  ylab("US Domestic Box Office") + xlab("Production Companies")+
+  theme_minimal()+scale_fill_hue()
+````
+
+##### This graph shows the mean US box office for each production company in the 2010s. Walt Disney Pictures has the greatest mean, followed by Warner Bros. Pictures. Walt Disney Pictures had mostly fantasy, action, and adventure movies. Warner Bros. Pictures had thriller, fantasy, drama, and action movies mostly. There are relatively few war movies.
+
+```{R} 
+pca_dat<-movies_comb%>%select_if(is.numeric)%>%
+  select(-X1,-id,-Year)%>%na.omit%>%distinct()%>%scale
+movies_pca <-pca_dat%>%princomp
+eigval<-movies_pca$sdev^2
+head(eigval)
+#I picked the first 3 PCAs because their eiganvalues are all greater than 1. 
+summary(movies_pca,loadings=T)
+````
+
+
+```{R} 
+movies_pca$loadings[1:9,c(2,3)]%>%as.data.frame%>%rownames_to_column%>%
+  ggplot()+geom_hline(aes(yintercept=0),lty=2)+
+  geom_vline(aes(xintercept=0),lty=2)+ylab("PC3")+xlab("PC2")+
+  geom_segment(aes(x=0,y=0,xend=Comp.2,yend=Comp.3),arrow=arrow(),col="red")+
+  geom_label(aes(x=Comp.2*1.1,y=Comp.3*1.1,label=rowname))
+````
+##### This graph looks at PC2 and PC3. A high PC2 and PC3 score means the movie will have a more recent decade, greater IMDB Votes and greater IMDB Ratings. Scoring high on PC3 means the movie will have a more recent decade, greater Bechdel test rating, and greater number of oscars won; however, the movie will have a lower number of Oscar nominations and lower US box office total. Scoring high on PC2 means the movie will have a higher number of Oscar nominations, a more recent decade, higher IMDB votes and higher IMDB rating; however, it will also have a lower Oscars won, lower metascore, lower rating, and lower US box office total.
+
+##### Scoring high on PC1 means the movie will have a more recent decade and greater Oscar nominations. The movie will also have lower number of Oscars won, lower runtime, lower metascore, lower IMDB votes, lower IMDB rating and lower US box office total.

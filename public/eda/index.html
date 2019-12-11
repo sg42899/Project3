@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Sruti Gorantla" />
+    <meta name="description" content="This website showcases all the projects I have done in R and python">
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+    <title>Exploratory Data Analysis</title>
+    <meta name="generator" content="Hugo 0.60.1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/resume/resume">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/eda/">Exploratory Data Analysis</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+          December 10, 2019
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<div id="these-datasets-were-taken-from-the-internet.-two-datasets-were-used-one-includes-data-about-the-bechdel-test-score-of-each-movie-while-the-other-includes-information-about-the-top-250-movies-on-imdb.-the-usboxofficeinf-variable-is-the-us-box-office-total-that-has-been-inflated-to-the-current-2019-value.-the-dataset-of-the-imdb-movies-was-found-on-the-website-data.world.-i-choose-these-two-datasets-because-i-like-movies-a-lot-and-was-curious-to-see-how-the-top-250-movies-ranked-on-the-bechdel-test." class="section level4">
+<h4>These datasets were taken from the Internet. Two datasets were used: one includes data about the Bechdel test score of each movie, while the other includes information about the top 250 movies on IMDB. The USboxOfficeInf variable is the US box office total that has been inflated to the current 2019 value. The dataset of the IMDB movies was found on the website data.world. I choose these two datasets because I like movies a lot and was curious to see how the top 250 movies ranked on the Bechdel test.</h4>
+<pre class="r"><code>library(jsonlite)
+library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ───────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>## ✓ ggplot2 3.2.1     ✓ purrr   0.3.3
+## ✓ tibble  2.1.3     ✓ dplyr   0.8.3
+## ✓ tidyr   1.0.0     ✓ stringr 1.4.0
+## ✓ readr   1.3.1     ✓ forcats 0.4.0</code></pre>
+<pre><code>## ── Conflicts ──────────────────────────────────────── tidyverse_conflicts() ──
+## x dplyr::filter()  masks stats::filter()
+## x purrr::flatten() masks jsonlite::flatten()
+## x dplyr::lag()     masks stats::lag()</code></pre>
+<pre class="r"><code>bechdel &lt;- fromJSON(&quot;http://bechdeltest.com/api/v1/getAllMovies?&quot;)
+glimpse(bechdel)</code></pre>
+<pre><code>## Observations: 8,286
+## Variables: 5
+## $ rating &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+## $ title  &lt;chr&gt; &quot;Roundhay Garden Scene&quot;, &quot;Pauvre Pierrot&quot;, &quot;Tables Turned on t…
+## $ id     &lt;int&gt; 8040, 5433, 5444, 6200, 6199, 4982, 5406, 5445, 5411, 5410, 49…
+## $ imdbid &lt;chr&gt; &quot;0392728&quot;, &quot;0000003&quot;, &quot;0000014&quot;, &quot;0132134&quot;, &quot;0000012&quot;, &quot;000009…
+## $ year   &lt;int&gt; 1888, 1892, 1895, 1895, 1896, 1896, 1896, 1896, 1898, 1898, 18…</code></pre>
+<pre class="r"><code>movies &lt;- read_csv(&quot;IMDB_Top250movies2_OMDB_Detailed.csv&quot;, col_types =  cols(Metascore = col_number(),Runtime = col_number(), USBoxOffice_Inf=col_double()))%&gt;%
+          separate(imdbID,into=c(&quot;imdbID&quot;,&quot;imdbid&quot;), sep=2)%&gt;%
+          select(-imdbID)</code></pre>
+<pre><code>## Warning: Missing column names filled in: &#39;X1&#39; [1]</code></pre>
+<pre><code>## Warning: 146 parsing failures.
+## row             col expected actual                                   file
+##   5 USBoxOffice_Inf a double    N/A &#39;IMDB_Top250movies2_OMDB_Detailed.csv&#39;
+##  19 USBoxOffice_Inf a double    N/A &#39;IMDB_Top250movies2_OMDB_Detailed.csv&#39;
+##  24 USBoxOffice_Inf a double    N/A &#39;IMDB_Top250movies2_OMDB_Detailed.csv&#39;
+##  30 USBoxOffice_Inf a double    N/A &#39;IMDB_Top250movies2_OMDB_Detailed.csv&#39;
+##  34 USBoxOffice_Inf a double    N/A &#39;IMDB_Top250movies2_OMDB_Detailed.csv&#39;
+## ... ............... ........ ...... ......................................
+## See problems(...) for more details.</code></pre>
+<pre class="r"><code>glimpse(movies)</code></pre>
+<pre><code>## Observations: 250
+## Variables: 22
+## $ X1              &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16…
+## $ Title           &lt;chr&gt; &quot;The Shawshank Redemption&quot;, &quot;The Godfather&quot;, &quot;The God…
+## $ Year            &lt;dbl&gt; 1994, 1972, 1974, 2008, 1957, 1993, 1994, 2003, 1966,…
+## $ Rated           &lt;chr&gt; &quot;R&quot;, &quot;R&quot;, &quot;R&quot;, &quot;PG-13&quot;, &quot;APPROVED&quot;, &quot;R&quot;, &quot;R&quot;, &quot;PG-13&quot;…
+## $ Released        &lt;chr&gt; &quot;14-Oct-94&quot;, &quot;24-Mar-72&quot;, &quot;20-Dec-74&quot;, &quot;18-Jul-08&quot;, &quot;…
+## $ Runtime         &lt;dbl&gt; 142, 175, 202, 152, 96, 195, 154, 201, 178, 139, 178,…
+## $ Genre           &lt;chr&gt; &quot;Crime, Drama&quot;, &quot;Crime, Drama&quot;, &quot;Crime, Drama&quot;, &quot;Acti…
+## $ Director        &lt;chr&gt; &quot;Frank Darabont&quot;, &quot;Francis Ford Coppola&quot;, &quot;Francis Fo…
+## $ Writer          &lt;chr&gt; &quot;Stephen King (short story \&quot;Rita Hayworth and Shawsh…
+## $ Actors          &lt;chr&gt; &quot;Tim Robbins, Morgan Freeman, Bob Gunton, William Sad…
+## $ Plot            &lt;chr&gt; &quot;Two imprisoned men bond over a number of years, find…
+## $ Language        &lt;chr&gt; &quot;English&quot;, &quot;English, Italian, Latin&quot;, &quot;English, Itali…
+## $ Country         &lt;chr&gt; &quot;USA&quot;, &quot;USA&quot;, &quot;USA&quot;, &quot;USA, UK&quot;, &quot;USA&quot;, &quot;USA&quot;, &quot;USA&quot;, …
+## $ Oscars_won      &lt;dbl&gt; 0, 3, 6, 2, 0, 7, 1, 11, 0, 0, 4, 6, 1, 4, 2, 5, 1, 4…
+## $ Oscars_nom      &lt;dbl&gt; 7, 0, 0, 0, 3, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,…
+## $ Metascore       &lt;dbl&gt; 80, 100, 85, 82, 96, 93, 94, 94, 90, 66, 92, 82, 81, …
+## $ imdbRating      &lt;dbl&gt; 9.3, 9.2, 9.0, 9.0, 8.9, 8.9, 8.9, 8.9, 8.9, 8.8, 8.8…
+## $ imdbVotes       &lt;dbl&gt; 1825626, 1243444, 856870, 1802351, 494215, 937837, 14…
+## $ imdbid          &lt;chr&gt; &quot;0111161&quot;, &quot;0068646&quot;, &quot;0071562&quot;, &quot;0468569&quot;, &quot;0050083&quot;…
+## $ DVD             &lt;chr&gt; &quot;27-Jan-98&quot;, &quot;9-Oct-01&quot;, &quot;24-May-05&quot;, &quot;9-Dec-08&quot;, &quot;6-…
+## $ USBoxOffice_Inf &lt;dbl&gt; 60007700, 708604300, 229070100, 669163900, NA, 207164…
+## $ Production      &lt;chr&gt; &quot;Columbia Pictures&quot;, &quot;Paramount Pictures&quot;, &quot;Paramount…</code></pre>
+<pre class="r"><code>#created a new variable called decade to classify each movie
+movies &lt;- movies%&gt;%mutate(Decade=floor(Year/10)*10)</code></pre>
+<pre class="r"><code>movies_comb &lt;- left_join(movies,bechdel,by=&quot;imdbid&quot;)%&gt;%select(-title,-year)
+glimpse(movies_comb)</code></pre>
+<pre><code>## Observations: 250
+## Variables: 25
+## $ X1              &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16…
+## $ Title           &lt;chr&gt; &quot;The Shawshank Redemption&quot;, &quot;The Godfather&quot;, &quot;The God…
+## $ Year            &lt;dbl&gt; 1994, 1972, 1974, 2008, 1957, 1993, 1994, 2003, 1966,…
+## $ Rated           &lt;chr&gt; &quot;R&quot;, &quot;R&quot;, &quot;R&quot;, &quot;PG-13&quot;, &quot;APPROVED&quot;, &quot;R&quot;, &quot;R&quot;, &quot;PG-13&quot;…
+## $ Released        &lt;chr&gt; &quot;14-Oct-94&quot;, &quot;24-Mar-72&quot;, &quot;20-Dec-74&quot;, &quot;18-Jul-08&quot;, &quot;…
+## $ Runtime         &lt;dbl&gt; 142, 175, 202, 152, 96, 195, 154, 201, 178, 139, 178,…
+## $ Genre           &lt;chr&gt; &quot;Crime, Drama&quot;, &quot;Crime, Drama&quot;, &quot;Crime, Drama&quot;, &quot;Acti…
+## $ Director        &lt;chr&gt; &quot;Frank Darabont&quot;, &quot;Francis Ford Coppola&quot;, &quot;Francis Fo…
+## $ Writer          &lt;chr&gt; &quot;Stephen King (short story \&quot;Rita Hayworth and Shawsh…
+## $ Actors          &lt;chr&gt; &quot;Tim Robbins, Morgan Freeman, Bob Gunton, William Sad…
+## $ Plot            &lt;chr&gt; &quot;Two imprisoned men bond over a number of years, find…
+## $ Language        &lt;chr&gt; &quot;English&quot;, &quot;English, Italian, Latin&quot;, &quot;English, Itali…
+## $ Country         &lt;chr&gt; &quot;USA&quot;, &quot;USA&quot;, &quot;USA&quot;, &quot;USA, UK&quot;, &quot;USA&quot;, &quot;USA&quot;, &quot;USA&quot;, …
+## $ Oscars_won      &lt;dbl&gt; 0, 3, 6, 2, 0, 7, 1, 11, 0, 0, 4, 6, 1, 4, 2, 5, 1, 4…
+## $ Oscars_nom      &lt;dbl&gt; 7, 0, 0, 0, 3, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,…
+## $ Metascore       &lt;dbl&gt; 80, 100, 85, 82, 96, 93, 94, 94, 90, 66, 92, 82, 81, …
+## $ imdbRating      &lt;dbl&gt; 9.3, 9.2, 9.0, 9.0, 8.9, 8.9, 8.9, 8.9, 8.9, 8.8, 8.8…
+## $ imdbVotes       &lt;dbl&gt; 1825626, 1243444, 856870, 1802351, 494215, 937837, 14…
+## $ imdbid          &lt;chr&gt; &quot;0111161&quot;, &quot;0068646&quot;, &quot;0071562&quot;, &quot;0468569&quot;, &quot;0050083&quot;…
+## $ DVD             &lt;chr&gt; &quot;27-Jan-98&quot;, &quot;9-Oct-01&quot;, &quot;24-May-05&quot;, &quot;9-Dec-08&quot;, &quot;6-…
+## $ USBoxOffice_Inf &lt;dbl&gt; 60007700, 708604300, 229070100, 669163900, NA, 207164…
+## $ Production      &lt;chr&gt; &quot;Columbia Pictures&quot;, &quot;Paramount Pictures&quot;, &quot;Paramount…
+## $ Decade          &lt;dbl&gt; 1990, 1970, 1970, 2000, 1950, 1990, 1990, 2000, 1960,…
+## $ rating          &lt;int&gt; 0, 2, 2, 3, 0, 3, 3, 1, 0, 1, 1, 1, 0, 3, 3, 2, 3, 3,…
+## $ id              &lt;int&gt; 339, 2224, 3896, 66, 302, 1497, 91, 248, 1725, 210, 2…</code></pre>
+<pre class="r"><code>nrow(bechdel)-nrow(movies_comb)</code></pre>
+<pre><code>## [1] 8036</code></pre>
+<p><em>7940 rows from the bechdel dataset were lost by combining with a left join. I choose a left join because I only wanted the bechdel information of the movies in the top 250 on IMDB.</em></p>
+<pre class="r"><code>#Separated each writer, actor, language, director and genre into its own row
+movies_comb &lt;- movies_comb%&gt;%
+  separate_rows(Writer,sep=&quot;, &quot;)%&gt;%
+  separate_rows(Actors,sep=&quot;, &quot;)%&gt;%
+  separate_rows(Language,sep=&quot;, &quot;)%&gt;%
+  separate_rows(Director,sep=&quot;, &quot;)%&gt;% 
+  separate_rows(Genre,sep=&quot;, &quot;)
+
+#Had to manually recode certain production company names because they were coded differently
+movies_comb$Production[movies_comb$Production==&quot;Paramount Pictures&quot;] &lt;-&quot;Paramount Studios&quot;
+movies_comb$Production[movies_comb$Production==&quot;Warner Bros.&quot;] &lt;-&quot;Warner Bros. Pictures&quot;
+movies_comb$Production[movies_comb$Production==&quot;The Weinstein Co.&quot;] &lt;-&quot;The Weinstein Company&quot;
+movies_comb$Production[movies_comb$Production==&quot;Lionsgate&quot;] &lt;-&quot;Lionsgate Films&quot;
+movies_comb$Production[movies_comb$Production==&quot;Liongate Films&quot;] &lt;-&quot;Lionsgate Films&quot;
+movies_comb$Production[movies_comb$Production==&quot;Twentieth Century Fox&quot;] &lt;-&quot;20th Century Fox&quot;
+movies_comb$Production[movies_comb$Production==&quot;Buena Vista Pictures&quot;] &lt;-&quot;Buena Vista&quot;
+
+movies_comb&lt;-movies_comb%&gt;%rename(oscarsWon=Oscars_won,oscarsNom=Oscars_nom,
+   USboxOfficeInf=USBoxOffice_Inf)</code></pre>
+<pre class="r"><code>statsTable&lt;-movies_comb%&gt;%select_if(is.numeric)%&gt;%select(-X1,-id)%&gt;%
+   na.omit%&gt;%distinct()%&gt;%
+   summarize_all(list(min=min,max=max,sd=sd,var=var,mean=mean))
+
+statsTable&lt;-statsTable%&gt;%pivot_longer(contains(&quot;_&quot;))%&gt;%
+   separate(name,into=c(&quot;Variable&quot;,&quot;Stat&quot;),sep=&quot;_&quot;)%&gt;%
+   pivot_wider(names_from=&quot;Stat&quot;,values_from=&quot;value&quot;)
+
+print(statsTable)</code></pre>
+<pre><code>## # A tibble: 10 x 6
+##    Variable         min          max            sd      var          mean
+##    &lt;chr&gt;          &lt;dbl&gt;        &lt;dbl&gt;         &lt;dbl&gt;    &lt;dbl&gt;         &lt;dbl&gt;
+##  1 Year            1939       2017          15.2   2.32e+ 2      1996.   
+##  2 Runtime           81        238          28.2   7.92e+ 2       132.   
+##  3 oscarsWon          0         11           2.28  5.21e+ 0         1.67 
+##  4 oscarsNom          0          7           1.56  2.44e+ 0         0.774
+##  5 Metascore         53        100          10.8   1.17e+ 2        80.2  
+##  6 imdbRating         8          9.3         0.258 6.66e- 2         8.34 
+##  7 imdbVotes       2872    1825626      354298.    1.26e+11    590929.   
+##  8 USboxOfficeInf 21600 1802000000   275694269.    7.60e+16 231157117.   
+##  9 Decade          1930       2010          15.9   2.51e+ 2      1991.   
+## 10 rating             0          3           1.11  1.24e+ 0         1.75</code></pre>
+<p><em>This table shows min, max, sd, var, and mean for each numeric variable. The max year is 2017. The max IMDB rating is 9.3. The max metascore is 100 while the min metascore is 53. The max number of Oscars a movie won is 11. The highest inflated US box office total is $1,802,000,000 (belonging to Gone With the Wind).</em></p>
+<pre class="r"><code>movies_comb%&gt;%group_by(Decade)%&gt;%distinct(USboxOfficeInf)%&gt;%
+   summarize(mean_BoxOfficeUs=mean(USboxOfficeInf, na.rm=T),n=n()) </code></pre>
+<pre><code>## # A tibble: 10 x 3
+##    Decade mean_BoxOfficeUs     n
+##     &lt;dbl&gt;            &lt;dbl&gt; &lt;int&gt;
+##  1   1920             NaN      1
+##  2   1930       902920351      3
+##  3   1940       247880900      3
+##  4   1950       449573450      5
+##  5   1960       285347364.     9
+##  6   1970       380926574.    19
+##  7   1980       203776168.    27
+##  8   1990       201354158.    41
+##  9   2000       148130633.    48
+## 10   2010       162011410.    35</code></pre>
+<p><em>This shows the mean inflated US box office total for each decade. 1930 had the largest mean (probably because Gone with the Wind was released this decade). 2000 and 2010 had the lowest means.</em></p>
+<pre class="r"><code>movies_comb</code></pre>
+<pre><code>## # A tibble: 17,172 x 25
+##       X1 Title  Year Rated Released Runtime Genre Director Writer Actors Plot 
+##    &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;
+##  1     1 The …  1994 R     14-Oct-…     142 Crime Frank D… &quot;Step… Tim R… Two …
+##  2     1 The …  1994 R     14-Oct-…     142 Drama Frank D… &quot;Step… Tim R… Two …
+##  3     1 The …  1994 R     14-Oct-…     142 Crime Frank D… &quot;Step… Morga… Two …
+##  4     1 The …  1994 R     14-Oct-…     142 Drama Frank D… &quot;Step… Morga… Two …
+##  5     1 The …  1994 R     14-Oct-…     142 Crime Frank D… &quot;Step… Bob G… Two …
+##  6     1 The …  1994 R     14-Oct-…     142 Drama Frank D… &quot;Step… Bob G… Two …
+##  7     1 The …  1994 R     14-Oct-…     142 Crime Frank D… &quot;Step… Willi… Two …
+##  8     1 The …  1994 R     14-Oct-…     142 Drama Frank D… &quot;Step… Willi… Two …
+##  9     1 The …  1994 R     14-Oct-…     142 Crime Frank D… Frank… Tim R… Two …
+## 10     1 The …  1994 R     14-Oct-…     142 Drama Frank D… Frank… Tim R… Two …
+## # … with 17,162 more rows, and 14 more variables: Language &lt;chr&gt;,
+## #   Country &lt;chr&gt;, oscarsWon &lt;dbl&gt;, oscarsNom &lt;dbl&gt;, Metascore &lt;dbl&gt;,
+## #   imdbRating &lt;dbl&gt;, imdbVotes &lt;dbl&gt;, imdbid &lt;chr&gt;, DVD &lt;chr&gt;,
+## #   USboxOfficeInf &lt;dbl&gt;, Production &lt;chr&gt;, Decade &lt;dbl&gt;, rating &lt;int&gt;,
+## #   id &lt;int&gt;</code></pre>
+<pre class="r"><code>movies_comb%&gt;%group_by(Actors)%&gt;%distinct(USboxOfficeInf)%&gt;%
+   summarize(mean_BoxOfficeUs=mean(USboxOfficeInf, na.rm=T),
+   num_movies=n_distinct(USboxOfficeInf))%&gt;%
+   arrange(desc(mean_BoxOfficeUs))</code></pre>
+<pre><code>## # A tibble: 816 x 3
+##    Actors           mean_BoxOfficeUs num_movies
+##    &lt;chr&gt;                       &lt;dbl&gt;      &lt;int&gt;
+##  1 Barbara O&#39;Neil         1802000000          1
+##  2 Evelyn Keyes           1802000000          1
+##  3 Thomas Mitchell        1802000000          2
+##  4 Vivien Leigh           1802000000          1
+##  5 Peter Cushing          1286033500          1
+##  6 Lorraine Gary          1153990200          1
+##  7 Richard Dreyfuss       1153990200          1
+##  8 Roy Scheider           1153990200          1
+##  9 Robert Shaw             978583650          2
+## 10 Adam Driver             974117000          1
+## # … with 806 more rows</code></pre>
+<p><em>This shows the mean inflated US box office totals for each actor, arranged in descending order of the mean money. The actors from Gone with the Wind had the greatest amount. Next was Peter Cushing who acted in Star Wars: A New Hope. Following him is Lorraine Gary, who was in Jaws. Most of these actors with the highest mean only acted in one movie.</em></p>
+<pre class="r"><code>movies_comb%&gt;%filter(Decade==2000)%&gt;%na.omit()%&gt;%
+  group_by(Director)%&gt;%distinct(USboxOfficeInf)%&gt;%
+  summarize(mean_BoxOfficeUs=mean(USboxOfficeInf),
+  num_movies=n_distinct(USboxOfficeInf),max_BoxOfficeUs=max(USboxOfficeInf),
+  min_BoxOfficeUs=min(USboxOfficeInf))%&gt;%arrange(desc(mean_BoxOfficeUs))#, desc(num_movies))</code></pre>
+<pre><code>## # A tibble: 41 x 5
+##    Director          mean_BoxOfficeUs num_movies max_BoxOfficeUs min_BoxOfficeUs
+##    &lt;chr&gt;                        &lt;dbl&gt;      &lt;int&gt;           &lt;dbl&gt;           &lt;dbl&gt;
+##  1 Peter Jackson           493499133.          3       554458600       409772500
+##  2 Lee Unkrich             456922250           2       507600600       406243900
+##  3 Gore Verbinski          456346600           1       456346600       456346600
+##  4 David Silverman         406243900           1       406243900       406243900
+##  5 Andrew Stanton          394225300           2       507600600       280850000
+##  6 Pete Docter             380050350           2       406243900       353856800
+##  7 Bob Peterson            353856800           1       353856800       353856800
+##  8 Ridley Scott            313674500           1       313674500       313674500
+##  9 Paul Greengrass         297894500           1       297894500       297894500
+## 10 Christopher Nolan       267860250           4       669163900        40664200
+## # … with 31 more rows</code></pre>
+<p><em>This shows the directors in 2000s, arranged by descending mean US box office totals. Peter Jackson had the largest mean box office with 3 movies. Next is Lee Unkrich who had two movies. Christopher Nolan had the most movies (4) in 2000s but was ranked number 10 by mean box office totals.</em></p>
+<pre class="r"><code>movies_comb%&gt;%filter(rating==3)%&gt;%select(Title,Actors)%&gt;%
+  distinct()%&gt;%group_by(Actors)%&gt;%
+  summarize(n=n())%&gt;%arrange(desc(n))</code></pre>
+<pre><code>## # A tibble: 324 x 2
+##    Actors                    n
+##    &lt;chr&gt;                 &lt;int&gt;
+##  1 Aamir Khan                2
+##  2 Arnold Schwarzenegger     2
+##  3 Bette Davis               2
+##  4 Bruce Willis              2
+##  5 Clint Eastwood            2
+##  6 Ellen Burstyn             2
+##  7 Emma Stone                2
+##  8 Fred MacMurray            2
+##  9 George Sanders            2
+## 10 Harrison Ford             2
+## # … with 314 more rows</code></pre>
+<p><em>This ranks each actor by the number of movies he was in that had a score of 3 on the Bechdel test. A score of 3 indicates the movie passed the test. Aamir Khan, Arnold Schwarzenegger, Bette Davis, Emma Stone, Clint Eastwood, Bruce Wilis, Harrison Ford, and many others acted in the most number of movies that passed the Bechdel Test. The highest number of movies was only 2.</em></p>
+<pre class="r"><code>movies_comb%&gt;%group_by(Language,Rated)%&gt;%
+  distinct(USboxOfficeInf)%&gt;%
+  summarize(mean_BoxOfficeUs=mean(USboxOfficeInf, na.rm=T))%&gt;%
+  arrange(desc(mean_BoxOfficeUs))</code></pre>
+<pre><code>## # A tibble: 104 x 3
+## # Groups:   Language [47]
+##    Language    Rated mean_BoxOfficeUs
+##    &lt;chr&gt;       &lt;chr&gt;            &lt;dbl&gt;
+##  1 Hebrew      PG          695924500 
+##  2 Nepali      PG          695924500 
+##  3 Swahili     G           672365600 
+##  4 Xhosa       G           672365600 
+##  5 Zulu        G           672365600 
+##  6 Arabic      PG          589271850 
+##  7 English     G           557894937.
+##  8 Quenya      PG-13       554458600 
+##  9 Old English PG-13       535362450 
+## 10 Latin       PG-13       518787900 
+## # … with 94 more rows</code></pre>
+<p><em>This looked at mean US box office totals of different ratings in different languages. The box office totals was arranged in descending order. Movies in Hebrew and Nepali with a PG rating had the most mean US box office. Movies in English with a G rating was ranked number 7. Overall, PG and G movies seemed to make more money. R movies and unrated/not rated movies made the least amount.</em></p>
+<pre class="r"><code>movies_comb%&gt;%select_if(is.numeric)%&gt;%select(-X1,-id,-Year)%&gt;%
+  na.omit%&gt;%distinct()%&gt;%cor</code></pre>
+<pre><code>##                     Runtime   oscarsWon   oscarsNom   Metascore  imdbRating
+## Runtime         1.000000000  0.42620743 -0.03506705  0.07149819  0.32207780
+## oscarsWon       0.426207434  1.00000000 -0.36371172  0.35591787  0.21026040
+## oscarsNom      -0.035067048 -0.36371172  1.00000000 -0.10859934 -0.02976528
+## Metascore       0.071498190  0.35591787 -0.10859934  1.00000000  0.07821209
+## imdbRating      0.322077799  0.21026040 -0.02976528  0.07821209  1.00000000
+## imdbVotes       0.197111120  0.14422191  0.05923161 -0.11504790  0.63587024
+## USboxOfficeInf  0.246166039  0.47518173 -0.03794334  0.13843737  0.14300305
+## Decade         -0.167432797 -0.25655023 -0.04093096 -0.20119768 -0.08137040
+## rating          0.005151552  0.07635199 -0.05475956  0.09192852 -0.13966148
+##                  imdbVotes USboxOfficeInf      Decade       rating
+## Runtime         0.19711112     0.24616604 -0.16743280  0.005151552
+## oscarsWon       0.14422191     0.47518173 -0.25655023  0.076351993
+## oscarsNom       0.05923161    -0.03794334 -0.04093096 -0.054759561
+## Metascore      -0.11504790     0.13843737 -0.20119768  0.091928522
+## imdbRating      0.63587024     0.14300305 -0.08137040 -0.139661476
+## imdbVotes       1.00000000     0.26717366  0.13084586  0.014204875
+## USboxOfficeInf  0.26717366     1.00000000 -0.37459343  0.062372979
+## Decade          0.13084586    -0.37459343  1.00000000  0.195543122
+## rating          0.01420487     0.06237298  0.19554312  1.000000000</code></pre>
+<p><em>This shows a correlation matrix between the numeric variables. The highest correlation is between IMDB rating and IMDB votes (0.6359). The next highest correlation is between runtime and number of Oscars won (0.4262). Bechdel test score and IMDB votes have the weakest correlation (0.0142). Interestingly, the Bechdel test score has a slight negative correlation with the IMDB rating (-0.1397) and the number of Oscars nominated (-0.0548).</em></p>
+<pre class="r"><code>movies_comb%&gt;%na.omit%&gt;%
+  select(Director,rating,USboxOfficeInf)%&gt;%
+  group_by(Director)%&gt;%distinct()%&gt;%
+  summarize(bechdel_mean=mean(rating),mean_BoxOfficeUs=mean(USboxOfficeInf))%&gt;%
+  arrange(desc(mean_BoxOfficeUs))</code></pre>
+<pre><code>## # A tibble: 120 x 3
+##    Director         bechdel_mean mean_BoxOfficeUs
+##    &lt;chr&gt;                   &lt;dbl&gt;            &lt;dbl&gt;
+##  1 Sam Wood                    3       1802000000
+##  2 George Lucas                1       1286033500
+##  3 J.J. Abrams                 3        974117000
+##  4 George Cukor                3        902920351
+##  5 Victor Fleming              3        902920351
+##  6 Irvin Kershner              0        892853900
+##  7 William Wyler               3        882980000
+##  8 Richard Marquand            1        729660300
+##  9 George Roy Hill             1        719451700
+## 10 Rob Minkoff                 1        672365600
+## # … with 110 more rows</code></pre>
+<p><em>This looked at directors by their mean Bechdel score. Sam Wood had the highest mean US box office totals and a mean Bechdel rating of 3, while George Lucas had the second highest mean but a mean Bechdel rating of only 1. Irvin Kershner is ranked #6 by mean US box office totals but has a Bechdel score of 0.</em></p>
+<pre class="r"><code>movies_comb%&gt;%na.omit%&gt;%
+  select(Writer,rating,Metascore,oscarsWon)%&gt;%
+  group_by(Writer)%&gt;%distinct()%&gt;%
+  summarize(mean_bechdel=mean(rating),
+  mean_Metascore=mean(Metascore),mean_Oscars_won=mean(oscarsWon))%&gt;%
+  arrange(desc(mean_Metascore))</code></pre>
+<pre><code>## # A tibble: 400 x 4
+##    Writer                           mean_bechdel mean_Metascore mean_Oscars_won
+##    &lt;chr&gt;                                   &lt;dbl&gt;          &lt;dbl&gt;           &lt;dbl&gt;
+##  1 Edgar Allan Woolf (screenplay)              3            100               2
+##  2 Florence Ryerson (screenplay)               3            100               2
+##  3 L. Frank Baum (from the book by)            3            100               2
+##  4 Michael Wilson (screenplay)                 0            100               7
+##  5 Noel Langley (adaptation)                   3            100               2
+##  6 Noel Langley (screenplay)                   3            100               2
+##  7 Robert Bolt (screenplay)                    0            100               7
+##  8 T.E. Lawrence (writings)                    0            100               7
+##  9 Guillermo del Toro                          3             98               3
+## 10 Joseph Stefano (screenplay)                 1             97               0
+## # … with 390 more rows</code></pre>
+<p><em>This looked at different writers by their mean Bechdel score, mean Metascore and mean number of Oscars won. This was arranged by descending order of the mean Metascore. 8 writers had a metascore of 100 but 3 of them had a total Bechdel score of 0 (Robert Bolt, T. E. Lawrence, Michael Wilson); the rest had a total Bechdel score of only 3.</em></p>
+<pre class="r"><code>movies_comb%&gt;%na.omit%&gt;%select(Genre,rating,USboxOfficeInf)%&gt;%
+  group_by(Genre)%&gt;%distinct()%&gt;%
+  summarize(mean_rating=mean(rating),
+  mean_BoxOfficeUs=mean(USboxOfficeInf))%&gt;%
+  arrange(desc(mean_BoxOfficeUs))#, desc(mean_rating))</code></pre>
+<pre><code>## # A tibble: 19 x 3
+##    Genre     mean_rating mean_BoxOfficeUs
+##    &lt;chr&gt;           &lt;dbl&gt;            &lt;dbl&gt;
+##  1 Fantasy          2          418627556.
+##  2 Adventure        1.81       403719791.
+##  3 Action           2.04       367363614.
+##  4 History          2.2        341794620 
+##  5 Romance          2          334875600 
+##  6 Animation        2.14       291064993.
+##  7 Comedy           1.57       249321197.
+##  8 Sci-Fi           2.1        236930520 
+##  9 Horror           1.5        218850575 
+## 10 Thriller         1.89       210985141.
+## 11 Western          1.33       197468900 
+## 12 Drama            1.69       195979957.
+## 13 Sport            1.5        182717925 
+## 14 Crime            1.69       174567911.
+## 15 War              1.1        154847158.
+## 16 Biography        1.65       150017869.
+## 17 Mystery          1.65       121340665 
+## 18 Family           2.5        115464950.
+## 19 Music            1.5         81494100</code></pre>
+<p><em>This looked at the mean Bechdel test score and mean US box office total by the movies’ genres. Fantasy had the highest box office compared to any other genre. It has a mean Bechdel score of 2. By arranging by descending mean Bechdel test score, Fantasy ranked #6. Family had the highest mean Bechdel test score but had the second least descending mean US box office total. Music had the lowest mean box office.</em></p>
+<pre class="r"><code>options(scipen=999)
+ggplot(movies_comb%&gt;%filter(Decade&gt;=1990))+
+  geom_point(aes(y=USboxOfficeInf,x=imdbVotes,color=rating,size=imdbRating))+
+  theme_minimal()+
+  ggtitle(&quot;Relationship between IMDB Votes and US Box Office in 1990-2010s&quot;) + 
+  ylab(&quot;US Domestic Box Office&quot;) + xlab(&quot;IMDB Votes&quot;)+
+  scale_color_gradient(low=&quot;yellow&quot;,high=&quot;red&quot;)</code></pre>
+<pre><code>## Warning: Removed 320 rows containing missing values (geom_point).</code></pre>
+<p><img src="/EDA_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<div id="there-appears-to-be-a-slight-positive-correlation-between-imdb-votes-and-us-inflated-box-office-totals.-the-movies-with-the-highest-votes-and-highest-box-office-had-greater-imdb-ratings.-the-bechdel-test-seems-to-be-spread-evenly-regardless-of-imdb-votes-and-box-office." class="section level5">
+<h5>There appears to be a slight positive correlation between IMDB votes and US inflated box office totals. The movies with the highest votes and highest box office had greater IMDB ratings. The Bechdel test seems to be spread evenly regardless of IMDB votes and box office.</h5>
+<pre class="r"><code>ggplot(movies_comb%&gt;%filter(Decade==2010)%&gt;%na.omit,
+  aes(x=Production,fill=Genre))+
+  geom_bar(aes(y=USboxOfficeInf),stat=&quot;summary&quot;,fun.y=&quot;mean&quot;)+
+  coord_flip()+ggtitle(&quot;Production Companies&#39; US Box Office from 2010s&quot;) + 
+  ylab(&quot;US Domestic Box Office&quot;) + xlab(&quot;Production Companies&quot;)+
+  theme_minimal()+scale_fill_hue()</code></pre>
+<p><img src="/EDA_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+</div>
+<div id="this-graph-shows-the-mean-us-box-office-for-each-production-company-in-the-2010s.-walt-disney-pictures-has-the-greatest-mean-followed-by-warner-bros.pictures.-walt-disney-pictures-had-mostly-fantasy-action-and-adventure-movies.-warner-bros.pictures-had-thriller-fantasy-drama-and-action-movies-mostly.-there-are-relatively-few-war-movies." class="section level5">
+<h5>This graph shows the mean US box office for each production company in the 2010s. Walt Disney Pictures has the greatest mean, followed by Warner Bros. Pictures. Walt Disney Pictures had mostly fantasy, action, and adventure movies. Warner Bros. Pictures had thriller, fantasy, drama, and action movies mostly. There are relatively few war movies.</h5>
+<pre class="r"><code>pca_dat&lt;-movies_comb%&gt;%select_if(is.numeric)%&gt;%
+  select(-X1,-id,-Year)%&gt;%na.omit%&gt;%distinct()%&gt;%scale
+movies_pca &lt;-pca_dat%&gt;%princomp
+eigval&lt;-movies_pca$sdev^2
+head(eigval)</code></pre>
+<pre><code>##    Comp.1    Comp.2    Comp.3    Comp.4    Comp.5    Comp.6 
+## 2.4042735 1.5833934 1.2442181 0.9911553 0.8504880 0.7756230</code></pre>
+<pre class="r"><code>#I picked the first 3 PCAs because their eiganvalues are all greater than 1. 
+summary(movies_pca,loadings=T)</code></pre>
+<pre><code>## Importance of components:
+##                           Comp.1    Comp.2    Comp.3    Comp.4     Comp.5
+## Standard deviation     1.5505720 1.2583296 1.1154452 0.9955678 0.92221906
+## Proportion of Variance 0.2688323 0.1770461 0.1391214 0.1108254 0.09509676
+## Cumulative Proportion  0.2688323 0.4458784 0.5849998 0.6958252 0.79092194
+##                            Comp.6     Comp.7    Comp.8     Comp.9
+## Standard deviation     0.88069460 0.72615331 0.5693738 0.49270668
+## Proportion of Variance 0.08672578 0.05895955 0.0362487 0.02714404
+## Cumulative Proportion  0.87764771 0.93660727 0.9728560 1.00000000
+## 
+## Loadings:
+##                Comp.1 Comp.2 Comp.3 Comp.4 Comp.5 Comp.6 Comp.7 Comp.8 Comp.9
+## Runtime         0.404                       0.189  0.823         0.314  0.137
+## oscarsWon       0.503 -0.263 -0.179         0.106         0.272 -0.738       
+## oscarsNom      -0.155  0.263  0.458  0.629 -0.278  0.224  0.253 -0.311 -0.114
+## Metascore       0.236 -0.395               -0.813         0.185  0.252  0.155
+## imdbRating      0.380  0.480        -0.207 -0.317        -0.349        -0.598
+## imdbVotes       0.308  0.592 -0.149               -0.287                0.658
+## USboxOfficeInf  0.434 -0.109  0.126  0.386  0.327 -0.415  0.315  0.423 -0.278
+## Decade         -0.276  0.299 -0.584                0.109  0.626  0.111 -0.262
+## rating                -0.130 -0.612  0.625               -0.459</code></pre>
+<pre class="r"><code>movies_pca$loadings[1:9,c(2,3)]%&gt;%as.data.frame%&gt;%rownames_to_column%&gt;%
+  ggplot()+geom_hline(aes(yintercept=0),lty=2)+
+  geom_vline(aes(xintercept=0),lty=2)+ylab(&quot;PC3&quot;)+xlab(&quot;PC2&quot;)+
+  geom_segment(aes(x=0,y=0,xend=Comp.2,yend=Comp.3),arrow=arrow(),col=&quot;red&quot;)+
+  geom_label(aes(x=Comp.2*1.1,y=Comp.3*1.1,label=rowname))</code></pre>
+<p><img src="/EDA_files/figure-html/unnamed-chunk-17-1.png" width="672" />
+##### This graph looks at PC2 and PC3. A high PC2 and PC3 score means the movie will have a more recent decade, greater IMDB Votes and greater IMDB Ratings. Scoring high on PC3 means the movie will have a more recent decade, greater Bechdel test rating, and greater number of oscars won; however, the movie will have a lower number of Oscar nominations and lower US box office total. Scoring high on PC2 means the movie will have a higher number of Oscar nominations, a more recent decade, higher IMDB votes and higher IMDB rating; however, it will also have a lower Oscars won, lower metascore, lower rating, and lower US box office total.</p>
+</div>
+<div id="scoring-high-on-pc1-means-the-movie-will-have-a-more-recent-decade-and-greater-oscar-nominations.-the-movie-will-also-have-lower-number-of-oscars-won-lower-runtime-lower-metascore-lower-imdb-votes-lower-imdb-rating-and-lower-us-box-office-total." class="section level5">
+<h5>Scoring high on PC1 means the movie will have a more recent decade and greater Oscar nominations. The movie will also have lower number of Oscars won, lower runtime, lower metascore, lower IMDB votes, lower IMDB rating and lower US box office total.</h5>
+</div>
+</div>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+      
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

@@ -1,0 +1,208 @@
+---
+title: "Python Post"
+output: html_document
+date: "2019-12-10"
+---
+
+
+
+<div id="python" class="section level2">
+<h2>Python</h2>
+<p>I used regex in python to extract certain key words from sentences.</p>
+<p>In this example, I extracted numbers from a string.</p>
+<pre class="python"><code>import re
+string1=&quot;We have to extract these numbers 12, 47, 48 The integers numbers are also interesting: 189 2036 314\&#39;,\&#39; is a separator, so please extract these numbers 125,789,1450 and also these 564,90456 We like to offer you 7890$ per month in order to complete this task... we are joking&quot;
+print(string1)</code></pre>
+<pre><code>## We have to extract these numbers 12, 47, 48 The integers numbers are also interesting: 189 2036 314&#39;,&#39; is a separator, so please extract these numbers 125,789,1450 and also these 564,90456 We like to offer you 7890$ per month in order to complete this task... we are joking</code></pre>
+<pre class="python"><code>re.findall(r&quot;\d+&quot;,string1)</code></pre>
+<pre><code>## [&#39;12&#39;, &#39;47&#39;, &#39;48&#39;, &#39;189&#39;, &#39;2036&#39;, &#39;314&#39;, &#39;125&#39;, &#39;789&#39;, &#39;1450&#39;, &#39;564&#39;, &#39;90456&#39;, &#39;7890&#39;]</code></pre>
+<p>I extracted IP addresses from the string.</p>
+<pre class="python"><code>string2=&quot;Jan 13 00:48:59: DROP service 68-&gt;67(udp) from 213.92.153.167 to 69.43.107.219, prefix: \&quot;spoof iana-0/8\&quot; \
+(in: eth0 69.43.112.233(38:f8:b7:90:45:92):68 -&gt; 217.70.100.113(00:21:87:79:9c:d9):67 UDP len:576 ttl:64) \
+Jan 13 12:02:48: ACCEPT service dns from 74.125.186.208 to firewall(pub-nic-dns), prefix: \&quot;none\&quot; \
+(in: eth0 74.125.186.208(00:1a:e3:52:5d:8e):36008 -&gt; 140.105.63.158(00:1a:9a:86:2e:62):53 UDP len:82 ttl:38) \
+Jan 13 17:44:52: DROP service 68-&gt;67(udp) from 172.45.240.237 to 217.70.177.60, prefix: \&quot;spoof iana-0/8\&quot; \
+(in: eth0 216.34.90.16(00:21:91:fe:a2:6f):68 -&gt; 69.43.85.253(00:07:e1:7c:53:db):67 UDP len:328 ttl:64) \
+Jan 13 17:52:08: ACCEPT service http from 213.121.184.130 to firewall(pub-nic), prefix: \&quot;none\&quot; \
+(in: eth0 213.121.184.130(00:05:2e:6a:a4:14):8504 -&gt; 140.105.63.164(00:60:11:92:ed:1b):80 TCP flags: ****S* len:52 ttl:109)&quot;
+print(string2)</code></pre>
+<pre><code>## Jan 13 00:48:59: DROP service 68-&gt;67(udp) from 213.92.153.167 to 69.43.107.219, prefix: &quot;spoof iana-0/8&quot; (in: eth0 69.43.112.233(38:f8:b7:90:45:92):68 -&gt; 217.70.100.113(00:21:87:79:9c:d9):67 UDP len:576 ttl:64) Jan 13 12:02:48: ACCEPT service dns from 74.125.186.208 to firewall(pub-nic-dns), prefix: &quot;none&quot; (in: eth0 74.125.186.208(00:1a:e3:52:5d:8e):36008 -&gt; 140.105.63.158(00:1a:9a:86:2e:62):53 UDP len:82 ttl:38) Jan 13 17:44:52: DROP service 68-&gt;67(udp) from 172.45.240.237 to 217.70.177.60, prefix: &quot;spoof iana-0/8&quot; (in: eth0 216.34.90.16(00:21:91:fe:a2:6f):68 -&gt; 69.43.85.253(00:07:e1:7c:53:db):67 UDP len:328 ttl:64) Jan 13 17:52:08: ACCEPT service http from 213.121.184.130 to firewall(pub-nic), prefix: &quot;none&quot; (in: eth0 213.121.184.130(00:05:2e:6a:a4:14):8504 -&gt; 140.105.63.164(00:60:11:92:ed:1b):80 TCP flags: ****S* len:52 ttl:109)</code></pre>
+<pre class="python"><code>re.findall(r&quot;\d+[.]\d+[.]\d+[.]\d+&quot;,string2)</code></pre>
+<pre><code>## [&#39;213.92.153.167&#39;, &#39;69.43.107.219&#39;, &#39;69.43.112.233&#39;, &#39;217.70.100.113&#39;, &#39;74.125.186.208&#39;, &#39;74.125.186.208&#39;, &#39;140.105.63.158&#39;, &#39;172.45.240.237&#39;, &#39;217.70.177.60&#39;, &#39;216.34.90.16&#39;, &#39;69.43.85.253&#39;, &#39;213.121.184.130&#39;, &#39;213.121.184.130&#39;, &#39;140.105.63.164&#39;]</code></pre>
+<p>I extracted web addresses from the string.</p>
+<pre class="python"><code>string3=r&quot;Fedora Core       ftp     \
+Fedora Extras   http    ftp     rsync\
+          ftp://ftp7.br.FreeBSD.org/pub/FreeBSD/ (ftp)\
+          ftp://ftp3.de.FreeBSD.org/pub/FreeBSD/ (ftp)\
+          ftp://ftp.is.FreeBSD.org/pub/FreeBSD/ (ftp / rsync)\
+          ftp://ftp4.jp.FreeBSD.org/pub/FreeBSD/ (ftp)\
+          ftp://ftp.no.FreeBSD.org/pub/FreeBSD/ (ftp / rsync)\
+        *\
+          ftp://ftp3.no.FreeBSD.org/pub/FreeBSD/ (ftp)\
+          ftp://ftp.pt.FreeBSD.org/pub/FreeBSD/ (ftp)\
+          ftp://ftp1.ro.FreeBSD.org/pub/FreeBSD/ (ftp / ftpv6)\
+          ftp://ftp3.es.FreeBSD.org/pub/FreeBSD/ (ftp)\
+          ftp://ftp2.tw.FreeBSD.org/pub/FreeBSD/ (ftp / ftpv6 / http / httpv6 / rsync / rsyncv6)\
+          ftp://ftp6.uk.FreeBSD.org/pub/FreeBSD/ (ftp)\
+          ftp://ftp6.us.FreeBSD.org/pub/FreeBSD/ (ftp / http)&quot;
+
+re.findall(r&quot;(ftp:..ftp*..\w\w.FreeBSD.org.pub.FreeBSD.)&quot;,string3)</code></pre>
+<pre><code>## [&#39;ftp://ftp7.br.FreeBSD.org/pub/FreeBSD/&#39;, &#39;ftp://ftp3.de.FreeBSD.org/pub/FreeBSD/&#39;, &#39;ftp://ftp.is.FreeBSD.org/pub/FreeBSD/&#39;, &#39;ftp://ftp4.jp.FreeBSD.org/pub/FreeBSD/&#39;, &#39;ftp://ftp.no.FreeBSD.org/pub/FreeBSD/&#39;, &#39;ftp://ftp3.no.FreeBSD.org/pub/FreeBSD/&#39;, &#39;ftp://ftp.pt.FreeBSD.org/pub/FreeBSD/&#39;, &#39;ftp://ftp1.ro.FreeBSD.org/pub/FreeBSD/&#39;, &#39;ftp://ftp3.es.FreeBSD.org/pub/FreeBSD/&#39;, &#39;ftp://ftp2.tw.FreeBSD.org/pub/FreeBSD/&#39;, &#39;ftp://ftp6.uk.FreeBSD.org/pub/FreeBSD/&#39;, &#39;ftp://ftp6.us.FreeBSD.org/pub/FreeBSD/&#39;]</code></pre>
+<p>I counted the number of times a word appears in the paragraph from Moby Dick.</p>
+<pre class="python"><code>string8=&quot;Call me Ishmael. Some years ago — never mind how long precisely — having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world. It is a way I have of driving off the spleen, and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off — then, I account it high time to get to sea as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the ship. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the ocean with me.&quot;
+
+words=re.split(r&quot;[.—,;&#39; ]+&quot;,string8)
+
+lowercase=[]
+for word in words:
+    lowercase.append(word.lower())
+    
+def count_chars(sentence):
+    counts = {}
+    for c in sentence:
+        if c in counts:
+            counts[c]+=1
+        else:counts[c]=1
+    for c in counts:
+        print(c, &quot;appears&quot;, counts[c],&quot;times&quot;)
+        
+count_chars(lowercase)
+    </code></pre>
+<pre><code>## (&#39;&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;all&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;money&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;hats&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;soon&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;years&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;stepping&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;find&#39;, &#39;appears&#39;, 2, &#39;times&#39;)
+## (&#39;before&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;methodically&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;to&#39;, &#39;appears&#39;, 5, &#39;times&#39;)
+## (&#39;deliberately&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;then&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;his&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;get&#39;, &#39;appears&#39;, 2, &#39;times&#39;)
+## (&#39;very&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;account&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;every&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;nearly&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;they&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;world&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;bringing&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;grim&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;rear&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;upper&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;towards&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;drizzly&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;people&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;some&#39;, &#39;appears&#39;, 2, &#39;times&#39;)
+## (&#39;soul&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;see&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;street&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;hypos&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;sea&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;substitute&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;driving&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;sail&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;pistol&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;never&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;degree&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;funeral&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;involuntarily&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;november&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;strong&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;on&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;about&#39;, &#39;appears&#39;, 2, &#39;times&#39;)
+## (&#39;of&#39;, &#39;appears&#39;, 4, &#39;times&#39;)
+## (&#39;cherish&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;damp&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;quietly&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;prevent&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;into&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;knocking&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;feelings&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;philosophical&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;moral&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;precisely&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;little&#39;, &#39;appears&#39;, 2, &#39;times&#39;)
+## (&#39;from&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;would&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;warehouses&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;there&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;long&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;cato&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;their&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;call&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;way&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;a&#39;, &#39;appears&#39;, 5, &#39;times&#39;)
+## (&#39;throws&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;interest&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;that&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;purse&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;but&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;part&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;particular&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;with&#39;, &#39;appears&#39;, 2, &#39;times&#39;)
+## (&#39;me&#39;, &#39;appears&#39;, 5, &#39;times&#39;)
+## (&#39;myself&#39;, &#39;appears&#39;, 2, &#39;times&#39;)
+## (&#39;circulation&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;this&#39;, &#39;appears&#39;, 2, &#39;times&#39;)
+## (&#39;up&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;whenever&#39;, &#39;appears&#39;, 4, &#39;times&#39;)
+## (&#39;can&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;growing&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;meet&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;my&#39;, &#39;appears&#39;, 4, &#39;times&#39;)
+## (&#39;coffin&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;and&#39;, &#39;appears&#39;, 7, &#39;times&#39;)
+## (&#39;almost&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;is&#39;, &#39;appears&#39;, 4, &#39;times&#39;)
+## (&#39;mind&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;it&#39;, &#39;appears&#39;, 5, &#39;times&#39;)
+## (&#39;an&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;high&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;as&#39;, &#39;appears&#39;, 2, &#39;times&#39;)
+## (&#39;himself&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;have&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;in&#39;, &#39;appears&#39;, 4, &#39;times&#39;)
+## (&#39;ship&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;ocean&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;if&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;no&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;same&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;for&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;how&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;other&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;take&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;sword&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;watery&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;ball&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;knew&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;upon&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;hand&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;pausing&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;mouth&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;men&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;nothing&#39;, &#39;appears&#39;, 2, &#39;times&#39;)
+## (&#39;such&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;flourish&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;\x99s&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;ishmael&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;ago&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;off&#39;, &#39;appears&#39;, 2, &#39;times&#39;)
+## (&#39;especially&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;surprising&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;spleen&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;i&#39;, &#39;appears&#39;, 9, &#39;times&#39;)
+## (&#39;or&#39;, &#39;appears&#39;, 2, &#39;times&#39;)
+## (&#39;thought&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;shore&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;regulating&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;principle&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;time&#39;, &#39;appears&#39;, 2, &#39;times&#39;)
+## (&#39;the&#39;, &#39;appears&#39;, 10, &#39;times&#39;)
+## (&#39;requires&#39;, &#39;appears&#39;, 1, &#39;times&#39;)
+## (&#39;having&#39;, &#39;appears&#39;, 1, &#39;times&#39;)</code></pre>
+<p>```</p>
+</div>

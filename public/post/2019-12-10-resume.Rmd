@@ -1,0 +1,10 @@
+---
+title: Resume
+author: Sruti
+date: '2019-12-10'
+slug: resume
+categories: []
+tags: []
+description: ''
+---
+here is my resume

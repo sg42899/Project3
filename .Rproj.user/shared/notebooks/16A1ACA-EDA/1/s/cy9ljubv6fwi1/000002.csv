@@ -1,0 +1,2 @@
+"0","movies_comb%>%group_by(Decade)%>%distinct(USboxOfficeInf)%>%"
+"0","   summarize(mean_BoxOfficeUs=mean(USboxOfficeInf, na.rm=T),n=n()) "

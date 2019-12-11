@@ -1,0 +1,7 @@
+"0","movies_pca$loadings[1:9,c(2,3)]%>%as.data.frame%>%rownames_to_column%>%"
+"0","  ggplot()+geom_hline(aes(yintercept=0),lty=2)+"
+"0","  geom_vline(aes(xintercept=0),lty=2)+ylab(""PC3"")+xlab(""PC2"")+"
+"0","  geom_segment(aes(x=0,y=0,xend=Comp.2,yend=Comp.3),arrow=arrow(),col=""red"")+"
+"0","  geom_label(aes(x=Comp.2*1.1,y=Comp.3*1.1,label=rowname))"
+"2","Error in movies_pca$loadings[1:9, c(2, 3)] : subscript out of bounds
+"

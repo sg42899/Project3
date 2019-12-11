@@ -1,0 +1,6 @@
+"0","movies_comb%>%na.omit%>%"
+"0","  select(Writer,rating,Metascore,oscarsWon)%>%"
+"0","  group_by(Writer)%>%distinct()%>%"
+"0","  summarize(mean_bechdel=mean(rating),"
+"0","  mean_Metascore=mean(Metascore),mean_Oscars_won=mean(oscarsWon))%>%"
+"0","  arrange(desc(mean_Metascore))"

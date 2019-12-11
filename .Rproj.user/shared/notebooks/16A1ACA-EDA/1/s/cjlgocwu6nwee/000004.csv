@@ -1,0 +1,4 @@
+"0","movies_comb%>%group_by(Actors)%>%distinct(USboxOfficeInf)%>%"
+"0","   summarize(mean_BoxOfficeUs=mean(USboxOfficeInf, na.rm=T),"
+"0","   num_movies=n_distinct(USboxOfficeInf))%>%"
+"0","   arrange(desc(mean_BoxOfficeUs))"

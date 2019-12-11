@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Sruti Gorantla" />
+    <meta name="description" content="This website showcases all the projects I have done in R and python">
+    <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico">
+    <title>Project2</title>
+    <meta name="generator" content="Hugo 0.60.1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="/blog/">BLOG</a></li>
+        
+        <li><a href="/projects/">PROJECTS</a></li>
+        
+        <li><a href="/resume/resume">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="/project_2/">Project2</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+          December 10, 2019
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<div id="sruti-gorantla-sg42899" class="section level2">
+<h2>Sruti Gorantla, sg42899</h2>
+<pre class="r"><code>#0
+#install.packages(&quot;psych&quot;)
+library(psych)
+library(tidyverse)
+data(msqR)
+#removed alone, kindly and scornful because most of the values were NA
+select&lt;-dplyr::select
+msqR&lt;-msqR%&gt;%dplyr::select(-film,-alone,-kindly,-scornful) 
+#had to manually recode gender so it would be categorical than numeric
+msqR$gender&lt;-recode(msqR$gender,&#39;1&#39;=&quot;male&quot;, &#39;2&#39;=&quot;female&quot;) 
+#had to manually recode drug so it would be binary 
+msqR$drug&lt;-recode(msqR$drug,&#39;1&#39;=0, &#39;2&#39;=1)
+msqR&lt;-msqR%&gt;%na.omit</code></pre>
+<p>The msqR dataset is a large dataset containing the MSQ (Motivational State Questionnaire) scores of various participants to study emotions. A subset of this data includes an experiment where participants where given caffeine or a placebo drug and their various emotions where then scored using the MSQ. When the variable drug is 0, the participant received a placebo; when drug equals 1 the participant received caffeine. After taking caffeine, the participants’ various emotions and states were recorded. The Extraversion, Neuroticism, Lie and Sociability variables are from the EPI test that participants took rating their personality traits. I removed the film column because I only wanted to look at the experiment with caffeine; the film variable corresponds to the experiment where participants watched a particular film and had their emotions evaluated after.</p>
+<pre class="r"><code>#1
+man1&lt;-manova(cbind(Extraversion,Neuroticism,Lie,Sociability,Impulsivity,active,afraid,angry,relaxed,happy)~gender, data=msqR)
+summary(man1) </code></pre>
+<pre><code>##            Df Pillai approx F num Df den Df  Pr(&gt;F)  
+## gender      1 0.1895   2.4315     10    104 0.01204 *
+## Residuals 113                                        
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>summary.aov(man1)  </code></pre>
+<pre><code>##  Response Extraversion :
+##              Df  Sum Sq Mean Sq F value Pr(&gt;F)
+## gender        1   21.71  21.714  1.6666 0.1993
+## Residuals   113 1472.25  13.029               
+## 
+##  Response Neuroticism :
+##              Df  Sum Sq Mean Sq F value Pr(&gt;F)
+## gender        1   13.87  13.870  0.8317 0.3637
+## Residuals   113 1884.40  16.676               
+## 
+##  Response Lie :
+##              Df Sum Sq Mean Sq F value Pr(&gt;F)
+## gender        1   0.45 0.45028  0.2015 0.6543
+## Residuals   113 252.47 2.23426               
+## 
+##  Response Sociability :
+##              Df Sum Sq Mean Sq F value Pr(&gt;F)
+## gender        1   9.06  9.0642  1.4315  0.234
+## Residuals   113 715.51  6.3319               
+## 
+##  Response Impulsivity :
+##              Df Sum Sq Mean Sq F value  Pr(&gt;F)  
+## gender        1  21.97 21.9720  6.6707 0.01108 *
+## Residuals   113 372.20  3.2938                  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response active :
+##              Df Sum Sq Mean Sq F value  Pr(&gt;F)  
+## gender        1  2.603 2.60302  3.8629 0.05182 .
+## Residuals   113 76.145 0.67385                  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+##  Response afraid :
+##              Df  Sum Sq  Mean Sq F value Pr(&gt;F)
+## gender        1  0.0029 0.002875  0.0258 0.8726
+## Residuals   113 12.5710 0.111248               
+## 
+##  Response angry :
+##              Df Sum Sq  Mean Sq F value Pr(&gt;F)
+## gender        1  0.000 0.000011       0 0.9944
+## Residuals   113 24.487 0.216699               
+## 
+##  Response relaxed :
+##              Df Sum Sq Mean Sq F value Pr(&gt;F)
+## gender        1  0.109 0.10879  0.1563 0.6933
+## Residuals   113 78.639 0.69592               
+## 
+##  Response happy :
+##              Df Sum Sq Mean Sq F value Pr(&gt;F)
+## gender        1  1.581 1.58147  1.8346 0.1783
+## Residuals   113 97.410 0.86203</code></pre>
+<pre class="r"><code>0.05/11</code></pre>
+<pre><code>## [1] 0.004545455</code></pre>
+<pre class="r"><code>1-0.95^11</code></pre>
+<pre><code>## [1] 0.4311999</code></pre>
+<p><em>The manova results are significant as the p-value is 0.01204. When doing the univarate ANOVA, only Impulsivity signficantly differed between the two genders before doing the bonferroni adjustment. A total of 11 tests where done. Probability of getting at least one type 1 error is 43.12%. The significance level should be 0.004545455 after correcting. The difference in Impulsivity is not significant anymore. The assumptions for MANOVA are homogeneity of within-group covariance matrices and multivariate normality of dependent variables. These assumptions are probably not meet in this dataset. </em></p>
+<pre class="r"><code>#2
+m_a&lt;-mean(msqR[msqR$gender==&quot;female&quot;,]$sorry)-mean(msqR[msqR$gender==&quot;male&quot;,]$sorry)
+
+rand_dist &lt;-vector()
+
+for(i in 1:5000) {
+  new &lt;-data.frame(sorry =sample(msqR$sorry), gender = msqR$gender)
+  rand_dist[i] &lt;-mean(new[new$gender==&quot;female&quot;, ]$sorry)- mean(new[new$gender==&quot;male&quot;, ]$sorry)
+}
+hist(rand_dist,breaks=20, abline=0.59)</code></pre>
+<p><img src="/Project_2_files/figure-html/unnamed-chunk-3-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>mean(rand_dist&gt;m_a)*2 </code></pre>
+<pre><code>## [1] 0.6024</code></pre>
+<p><em>The null hypothesis is that sorry’s mean values does not significantly differ between females and males. The alternative hypothesis is that the difference between sorry’s mean value does significantly differ between the two genders. Since the p-value&gt;0.05, the null hypothesis is not rejected; the difference between the mean sorry scores betweeen the two genders is not significant.</em></p>
+<pre class="r"><code>#3
+library(lmtest)
+msqR$tense_c &lt;- msqR$tense - mean(msqR$tense)
+msqR$nervous_c &lt;- msqR$nervous - mean(msqR$nervous)
+fit&lt;-lm(Neuroticism~tense_c*nervous_c*gender, data=msqR)
+summary(fit)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Neuroticism ~ tense_c * nervous_c * gender, data = msqR)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -7.3624 -2.8525 -0.3724  2.6376  8.4862 
+## 
+## Coefficients:
+##                              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)                    9.8049     0.6111  16.044   &lt;2e-16 ***
+## tense_c                       -0.6414     0.9316  -0.688   0.4926    
+## nervous_c                      1.2326     1.0987   1.122   0.2644    
+## gendermale                    -1.6333     0.9160  -1.783   0.0774 .  
+## tense_c:nervous_c             -0.2901     0.7110  -0.408   0.6841    
+## tense_c:gendermale             3.7337     1.4897   2.506   0.0137 *  
+## nervous_c:gendermale          -4.3815     1.9695  -2.225   0.0282 *  
+## tense_c:nervous_c:gendermale   1.9021     1.1126   1.710   0.0902 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 3.885 on 107 degrees of freedom
+## Multiple R-squared:  0.1492, Adjusted R-squared:  0.09358 
+## F-statistic: 2.681 on 7 and 107 DF,  p-value: 0.01346</code></pre>
+<pre class="r"><code>#plot of regression
+new1&lt;-msqR 
+new1$tense_c&lt;-mean(msqR$tense_c) 
+new1$mean&lt;-predict(fit,new1) 
+new1$tense_c&lt;-mean(msqR$tense_c)+sd(msqR$tense_c) 
+new1$plus.sd&lt;-predict(fit,new1) 
+new1$tense_c&lt;-mean(msqR$tense_c)-sd(msqR$tense_c) 
+new1$minus.sd&lt;-predict(fit,new1)
+newint&lt;-new1%&gt;%select(Neuroticism,nervous_c,mean,plus.sd,minus.sd)%&gt;%gather(tension,value,-Neuroticism,-nervous_c)
+
+mycols&lt;-c(&quot;#619CFF&quot;,&quot;#F8766D&quot;,&quot;#00BA38&quot;)
+names(mycols)&lt;-c(&quot;-1 sd&quot;,&quot;mean&quot;,&quot;+1 sd&quot;)
+mycols=as.factor(mycols)
+
+ggplot(msqR,aes(nervous_c,Neuroticism),group=mycols)+geom_point()+geom_line(data=new1,aes(y=mean,color=&quot;mean&quot;))+geom_line(data=new1,aes(y=plus.sd,color=&quot;+1 sd&quot;))+geom_line(data=new1,aes(y=minus.sd,color=&quot;-1 sd&quot;))+scale_color_manual(values=mycols)+labs(color=&quot;Age (cont)&quot;)+theme(legend.position=c(.9,.2))</code></pre>
+<p><img src="/Project_2_files/figure-html/unnamed-chunk-4-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#assumptions
+resids&lt;-fit$residuals
+fitvals&lt;-fit$fitted.values
+ggplot()+geom_point(aes(fitvals,resids))+geom_hline(yintercept=0, color=&#39;red&#39;) </code></pre>
+<p><img src="/Project_2_files/figure-html/unnamed-chunk-4-2.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>shapiro.test(resids)</code></pre>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  resids
+## W = 0.97443, p-value = 0.02666</code></pre>
+<pre class="r"><code>bptest(fit) </code></pre>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  fit
+## BP = 7.0184, df = 7, p-value = 0.427</code></pre>
+<pre class="r"><code>coeftest(fit,vcoc=vcovHC(fit))</code></pre>
+<pre><code>## 
+## t test of coefficients:
+## 
+##                              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)                   9.80489    0.61112 16.0440  &lt; 2e-16 ***
+## tense_c                      -0.64139    0.93159 -0.6885  0.49264    
+## nervous_c                     1.23258    1.09869  1.1219  0.26443    
+## gendermale                   -1.63329    0.91603 -1.7830  0.07742 .  
+## tense_c:nervous_c            -0.29005    0.71095 -0.4080  0.68411    
+## tense_c:gendermale            3.73372    1.48972  2.5063  0.01370 *  
+## nervous_c:gendermale         -4.38147    1.96946 -2.2247  0.02820 *  
+## tense_c:nervous_c:gendermale  1.90211    1.11263  1.7096  0.09024 .  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<pre class="r"><code>fit2&lt;-lm(Neuroticism~tense_c+nervous_c+gender, data=msqR)
+summary(fit2)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Neuroticism ~ tense_c + nervous_c + gender, data = msqR)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -7.4841 -3.1348 -0.4841  2.5159  8.8652 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   9.6821     0.5166  18.743   &lt;2e-16 ***
+## tense_c       1.0262     0.7356   1.395    0.166    
+## nervous_c     0.0261     0.8025   0.033    0.974    
+## gendermale   -0.6507     0.7558  -0.861    0.391    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 4.025 on 111 degrees of freedom
+## Multiple R-squared:  0.05257,    Adjusted R-squared:  0.02696 
+## F-statistic: 2.053 on 3 and 111 DF,  p-value: 0.1106</code></pre>
+<p><em>A female who scored 0 on tense and 0 on nervous would have a Neuroticism score of 9.8049. For every 1 increase in tense, the Neuroticism score decreases by 0.6414 on average for females with a 0 nervous score. For every 1 increase in nervous, the Neuroticism score increases by 1.2326 on average for females with a 0 tense score. Males with 0 tense and 0 nervous scores have average Neuroticism scores less than females by 1.6333. Males with 0 nervous score have a slope of tense score on Neuroticism score that is 3.7337 more than females. Males with 0 tense scores have a slope of nervous score on Neuroticism score that is 4.3815 less than females.</em></p>
+<p><em>The linearity and normality assumptions are violated. The homoskedasticity is not violated. The regression results using the robust standard errors are the same as the homoskedasticity was not violated. The adjusted R-squared is 0.09358 so only 0.09358 of the data is explained by the model.</em></p>
+<pre class="r"><code>#4
+fit_SE&lt;-lm(Neuroticism~tense_c*nervous_c*gender, data=msqR) 
+  resids&lt;-fit_SE$residuals 
+  fitted&lt;-fit_SE$fitted.values 
+  resid_resamp&lt;-replicate(5000,{
+    new_resids&lt;-sample(resids,replace=TRUE) 
+    msqR$new_y&lt;-fitted+new_resids 
+    fit_SE&lt;-lm(new_y~tense_c*nervous_c*gender, data=msqR) 
+    coef(fit_SE) 
+  })
+ resid_resamp%&gt;%t%&gt;%as.data.frame%&gt;%summarize_all(sd)</code></pre>
+<pre><code>##   (Intercept)   tense_c nervous_c gendermale tense_c:nervous_c
+## 1    0.590977 0.8912742  1.040792  0.8949016         0.6812932
+##   tense_c:gendermale nervous_c:gendermale tense_c:nervous_c:gendermale
+## 1           1.413692             1.879685                     1.081033</code></pre>
+<p><em>All the standard errors decreased using the bootstrapped SE compared to both the robust SE and the original SE.</em></p>
+<pre class="r"><code>#5
+fit3&lt;-glm(drug~jittery+alert+aroused+sluggish+wakeful,data=msqR,family=binomial(link=&quot;logit&quot;))
+exp(coeftest(fit3))</code></pre>
+<pre><code>## 
+## z test of coefficients:
+## 
+##             Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept)  1.14591    1.80905  1.2583    2.267
+## jittery      2.16180    1.34500 13.4780    1.009
+## alert        0.92538    1.49839  0.8255    2.335
+## aroused      1.07928    1.43922  1.2331    2.303
+## sluggish     0.47495    1.31806  0.0675    1.007
+## wakeful      1.52112    1.49119  2.8569    1.342</code></pre>
+<pre class="r"><code>prob&lt;-predict(fit3,type=&quot;response&quot;)
+pred&lt;-ifelse(prob&gt;.5,1,0)
+table(truth=msqR$drug,predictions=pred)%&gt;%addmargins</code></pre>
+<pre><code>##      predictions
+## truth   0   1 Sum
+##   0    40  15  55
+##   1    13  47  60
+##   Sum  53  62 115</code></pre>
+<pre class="r"><code>(40+47)/115 #accuracy</code></pre>
+<pre><code>## [1] 0.7565217</code></pre>
+<pre class="r"><code>47/60 #sensitivity</code></pre>
+<pre><code>## [1] 0.7833333</code></pre>
+<pre class="r"><code>40/55 #specificity</code></pre>
+<pre><code>## [1] 0.7272727</code></pre>
+<pre class="r"><code>47/62 #precision</code></pre>
+<pre><code>## [1] 0.7580645</code></pre>
+<pre class="r"><code>#density of log-odds
+msqR$logit&lt;-predict(fit3,type=&quot;link&quot;)
+msqR$drug2&lt;-as.factor(msqR$drug)
+msqR%&gt;%ggplot()+geom_density(aes(logit,color=drug2,fill=drug2), alpha=.4)+
+  theme(legend.position=c(.85,.85))+geom_vline(xintercept=0)+xlab(&quot;predictor (logit)&quot;)</code></pre>
+<p><img src="/Project_2_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#ROC and AUC
+library(plotROC)
+ROCplot&lt;-ggplot(msqR)+geom_roc(aes(d=drug,m=prob), n.cuts=0)
+ROCplot</code></pre>
+<p><img src="/Project_2_files/figure-html/unnamed-chunk-6-2.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>calc_auc(ROCplot)</code></pre>
+<pre><code>##   PANEL group      AUC
+## 1     1    -1 0.799697</code></pre>
+<pre class="r"><code>#10 fold CV
+set.seed(1234)
+k=10
+data1&lt;-msqR[sample(nrow(msqR)),]
+folds&lt;-cut(seq(1:nrow(msqR)),breaks=k,labels=F)
+diags&lt;-NULL
+for(i in 1:k){
+  train&lt;-data1[folds!=i,]
+  test&lt;-data1[folds==i,]
+  truth&lt;-test$drug
+  fit4&lt;-glm(drug~jittery+alert+aroused+sluggish+wakeful,data=train,family=&quot;binomial&quot;)
+  coeftest(fit4)
+  probs&lt;-predict(fit4,newdata = test,type=&quot;response&quot;)
+  diags&lt;-rbind(diags,class_diag(probs,truth))
+}
+apply(diags,2,mean)</code></pre>
+<pre><code>##       acc      sens      spec       ppv       auc 
+## 0.7257576 0.7398810 0.7161905 0.7200794 0.7688095</code></pre>
+<p><em>Every one-unit increase in jittery multiplies odds of receiving the caffeine by 2.162. Every one-unit increase in alert multiplies odds by 0.925. Every one-unit increase in aroused multiplies odds by 1.079. Every one-unit increase in sluggish multiplies odds by 0.475. Every one-unit increase in wakeful multiplies odds by 1.521.</em></p>
+<p><em>Accuracy=0.757, Sensitivity(TPR)=0.783, Specificity(TNR)=0.727, Recall(PPV)=0.758</em></p>
+<p><em>The AUC is 0.800. Since the AUC is between .7 and .8, the model is fair at predicting if the participant had caffeine.</em></p>
+<p><em>The accuracy is 0.716, sensitivity is 0.780, and recall is 0.736, after performing the 10-fold CV. The AUC is now 0.756.</em></p>
+<pre class="r"><code>#6
+#install.packages(&quot;glmnet&quot;)
+set.seed(1234)
+library(glmnet)
+msqR2&lt;-msqR%&gt;%select(-TOD,-study,-form,-drug2,-logit) #removed these because 
+#they only had one value
+y&lt;-as.matrix(msqR2$drug)
+fit5&lt;-glm(drug~.-1,data=msqR2,family=&quot;binomial&quot;)
+x&lt;-model.matrix(fit5)
+cv&lt;-cv.glmnet(x,y,family=&quot;binomial&quot;)
+lasso&lt;-glmnet(x,y,family=&quot;binomial&quot;,lambda=cv$lambda.1se)
+coef(cv)</code></pre>
+<pre><code>## 84 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+##                        1
+## (Intercept)   0.27495218
+## active        .         
+## afraid        .         
+## alert         .         
+## angry         .         
+## aroused       .         
+## ashamed       .         
+## astonished    .         
+## at.ease       .         
+## at.rest       .         
+## attentive     .         
+## blue          .         
+## bored         .         
+## calm          .         
+## clutched.up   .         
+## confident     .         
+## content       .         
+## delighted     .         
+## depressed     .         
+## determined    .         
+## distressed    .         
+## drowsy        .         
+## dull          .         
+## elated        .         
+## energetic     .         
+## enthusiastic  .         
+## excited       .         
+## fearful       .         
+## frustrated    .         
+## full.of.pep   .         
+## gloomy        .         
+## grouchy       .         
+## guilty        .         
+## happy         .         
+## hostile       .         
+## inspired      .         
+## intense       .         
+## interested    .         
+## irritable     .         
+## jittery       0.21454132
+## lively        .         
+## lonely        .         
+## nervous       .         
+## placid        .         
+## pleased       .         
+## proud         .         
+## quiescent     .         
+## quiet         .         
+## relaxed       .         
+## sad           .         
+## satisfied     .         
+## scared        .         
+## serene        .         
+## sleepy       -0.09712778
+## sluggish     -0.18472050
+## sociable      .         
+## sorry         .         
+## still         .         
+## strong        .         
+## surprised     .         
+## tense         .         
+## tired         .         
+## unhappy       .         
+## upset         .         
+## vigorous      .         
+## wakeful       0.04416868
+## warmhearted   .         
+## wide.awake    .         
+## anxious       .         
+## cheerful      .         
+## idle          .         
+## inactive      .         
+## tranquil      .         
+## Extraversion  .         
+## Neuroticism   .         
+## Lie           .         
+## Sociability   .         
+## Impulsivity   .         
+## genderfemale  .         
+## gendermale    .         
+## time          .         
+## id            .         
+## tense_c       .         
+## nervous_c     .</code></pre>
+<pre class="r"><code>#10 fold after LASSO
+set.seed(1234)
+k=10
+
+data1&lt;-msqR2[sample(nrow(msqR2)),]
+folds&lt;-cut(seq(1:nrow(msqR2)),breaks=k,labels=F)
+
+diags&lt;-NULL
+for(i in 1:k){
+  train&lt;-data1[folds!=i,]
+  test&lt;-data1[folds==i,]
+  truth&lt;-test$drug
+  
+  fit&lt;-glm(drug~jittery+sleepy+sluggish+wakeful, data=train, family=&quot;binomial&quot;) 
+  
+  probs&lt;-predict(fit,newdata = test,type=&quot;response&quot;)
+  
+  diags&lt;-rbind(diags,class_diag(probs,truth))
+}
+
+apply(diags,2,mean)</code></pre>
+<pre><code>##       acc      sens      spec       ppv       auc 
+## 0.7166667 0.7398810 0.6995238 0.7139286 0.7799603</code></pre>
+<p><em>Only jittery, sleepy, sluggish, and wakeful were retained after doing LASSO. The AUC of the 10 fold CV is 0.765. The accuracy of this model using LASSO is 0.698. In part 5, the accuracy was 0.716, so using LASSO decreased the out of sample accuracy.</em></p>
+</div>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+      
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="/js/docs.min.js"></script>
+<script src="/js/main.js"></script>
+
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

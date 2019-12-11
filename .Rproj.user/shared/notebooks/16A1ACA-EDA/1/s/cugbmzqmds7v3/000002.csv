@@ -1,0 +1,5 @@
+"0","movies_comb%>%na.omit%>%select(Genre,rating,USboxOfficeInf)%>%"
+"0","  group_by(Genre)%>%distinct()%>%"
+"0","  summarize(mean_rating=mean(rating),"
+"0","  mean_BoxOfficeUs=mean(USboxOfficeInf))%>%"
+"0","  arrange(desc(mean_BoxOfficeUs))#, desc(mean_rating))"

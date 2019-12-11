@@ -1,0 +1,28 @@
+---
+title: Resume
+author: Sruti
+date: '2019-12-10'
+slug: resume
+categories: []
+tags: []
+description: ''
+---
+
+###  Education
+
+The University of Texas at Austin, Austin, TX   78712
+
+Bachelor of Science in Biology
+
+
+### Experience
+
+-BCRC Infusion Room Volunteer
+
+-APIE Math Classroom Coach
+
+### Awards
+
+-Women in Medicine Honors
+
+-College Scholar

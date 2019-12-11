@@ -1,0 +1,18 @@
+---
+title: Post about Python
+author: Sruti
+date: '2019-12-10'
+slug: post-about-python
+categories: [python]
+tags: []
+description: ''
+---
+
+```{r}
+#1
+man1<-manova(cbind(Extraversion,Neuroticism,Lie,Sociability,Impulsivity,active,afraid,angry,relaxed,happy)~gender, data=msqR)
+summary(man1) 
+summary.aov(man1)  
+0.05/11
+1-0.95^11
+```

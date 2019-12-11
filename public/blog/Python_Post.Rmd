@@ -1,0 +1,84 @@
+---
+title: "Python Post"
+output: html_document
+date: "2019-12-10"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Python
+
+I used regex in python to extract certain key words from sentences.
+
+In this example, I extracted numbers from a string. 
+
+```{python}
+import re
+string1="We have to extract these numbers 12, 47, 48 The integers numbers are also interesting: 189 2036 314\',\' is a separator, so please extract these numbers 125,789,1450 and also these 564,90456 We like to offer you 7890$ per month in order to complete this task... we are joking"
+print(string1)
+re.findall(r"\d+",string1)
+```
+
+I extracted IP addresses from the string. 
+
+```{python}
+string2="Jan 13 00:48:59: DROP service 68->67(udp) from 213.92.153.167 to 69.43.107.219, prefix: \"spoof iana-0/8\" \
+(in: eth0 69.43.112.233(38:f8:b7:90:45:92):68 -> 217.70.100.113(00:21:87:79:9c:d9):67 UDP len:576 ttl:64) \
+Jan 13 12:02:48: ACCEPT service dns from 74.125.186.208 to firewall(pub-nic-dns), prefix: \"none\" \
+(in: eth0 74.125.186.208(00:1a:e3:52:5d:8e):36008 -> 140.105.63.158(00:1a:9a:86:2e:62):53 UDP len:82 ttl:38) \
+Jan 13 17:44:52: DROP service 68->67(udp) from 172.45.240.237 to 217.70.177.60, prefix: \"spoof iana-0/8\" \
+(in: eth0 216.34.90.16(00:21:91:fe:a2:6f):68 -> 69.43.85.253(00:07:e1:7c:53:db):67 UDP len:328 ttl:64) \
+Jan 13 17:52:08: ACCEPT service http from 213.121.184.130 to firewall(pub-nic), prefix: \"none\" \
+(in: eth0 213.121.184.130(00:05:2e:6a:a4:14):8504 -> 140.105.63.164(00:60:11:92:ed:1b):80 TCP flags: ****S* len:52 ttl:109)"
+print(string2)
+re.findall(r"\d+[.]\d+[.]\d+[.]\d+",string2)
+```
+
+I extracted web addresses from the string. 
+
+```{python}
+string3=r"Fedora Core 		ftp 	\
+Fedora Extras 	http 	ftp 	rsync\
+          ftp://ftp7.br.FreeBSD.org/pub/FreeBSD/ (ftp)\
+          ftp://ftp3.de.FreeBSD.org/pub/FreeBSD/ (ftp)\
+          ftp://ftp.is.FreeBSD.org/pub/FreeBSD/ (ftp / rsync)\
+          ftp://ftp4.jp.FreeBSD.org/pub/FreeBSD/ (ftp)\
+          ftp://ftp.no.FreeBSD.org/pub/FreeBSD/ (ftp / rsync)\
+        *\
+          ftp://ftp3.no.FreeBSD.org/pub/FreeBSD/ (ftp)\
+          ftp://ftp.pt.FreeBSD.org/pub/FreeBSD/ (ftp)\
+          ftp://ftp1.ro.FreeBSD.org/pub/FreeBSD/ (ftp / ftpv6)\
+          ftp://ftp3.es.FreeBSD.org/pub/FreeBSD/ (ftp)\
+          ftp://ftp2.tw.FreeBSD.org/pub/FreeBSD/ (ftp / ftpv6 / http / httpv6 / rsync / rsyncv6)\
+          ftp://ftp6.uk.FreeBSD.org/pub/FreeBSD/ (ftp)\
+          ftp://ftp6.us.FreeBSD.org/pub/FreeBSD/ (ftp / http)"
+
+re.findall(r"(ftp:..ftp*..\w\w.FreeBSD.org.pub.FreeBSD.)",string3)
+```
+
+I counted the number of times a word appears in the paragraph from Moby Dick.
+
+```{python}
+string8="Call me Ishmael. Some years ago — never mind how long precisely — having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world. It is a way I have of driving off the spleen, and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off — then, I account it high time to get to sea as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the ship. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the ocean with me."
+
+words=re.split(r"[.—,;' ]+",string8)
+
+lowercase=[]
+for word in words:
+    lowercase.append(word.lower())
+    
+def count_chars(sentence):
+    counts = {}
+    for c in sentence:
+        if c in counts:
+            counts[c]+=1
+        else:counts[c]=1
+    for c in counts:
+        print(c, "appears", counts[c],"times")
+        
+count_chars(lowercase)
+    
+```
+```

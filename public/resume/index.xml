@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Resumes on Sruti Gorantla</title>
+    <link>/resume/</link>
+    <description>Recent content in Resumes on Sruti Gorantla</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Tue, 10 Dec 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="/resume/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Resume</title>
+      <link>/resume/resume/</link>
+      <pubDate>Tue, 10 Dec 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/resume/resume/</guid>
+      <description> Education The University of Texas at Austin, Austin, TX 78712
+Bachelor of Science in Biology
+ Experience -BCRC Infusion Room Volunteer
+-APIE Math Classroom Coach
+ Awards -Women in Medicine Honors
+-College Scholar
+ </description>
+    </item>
+    
+  </channel>
+</rss>
